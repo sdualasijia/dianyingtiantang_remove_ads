@@ -1,6 +1,6 @@
 # 电影天堂去广告 Loon 插件
 
-移除 `api.xhsdns.cn /api/app/init` 下发的开屏广告、首页横幅、播放页广告、分类/我的页横幅，以及底部“游戏”页外部广告大厅入口。
+移除 `api.xhsdns.cn` 下发的开屏广告、首页横幅、播放页贴片/暂停广告、分类/我的页横幅，以及底部“游戏”页外部广告大厅入口。
 
 ## 安装
 
@@ -18,7 +18,8 @@ https://raw.githubusercontent.com/sdualasijia/dianyingtiantang_remove_ads/main/r
 - `advconf.topicIndexList.banner_adv1`
 - `advconf.topicIndexList.banner_adv2`
 - `advconf.vodDetails.*_adv`
+- `vod_play_url[].ad`
+- `/api/vod/play` 返回体里的 `ad`
 - `advconf.classlist.banner_adv*`
 - `advconf.userinfo.banner_adv*`
 - `advconf.game_lobby`
-

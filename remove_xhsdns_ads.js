@@ -1,6 +1,8 @@
 /*
  * Loon response script for:
  *   https://api.xhsdns.cn/api/app/init
+ *   https://api.xhsdns.cn/api/vod/details
+ *   https://api.xhsdns.cn/api/vod/play
  *
  * It decrypts the encrypted `data` payload, clears ad slots, disables the
  * external game lobby entry, then encrypts the payload back with the app's
@@ -391,6 +393,41 @@
     return removed;
   }
 
+  function clearPlaybackAdFlags(payload) {
+    var changed = 0;
+
+    function clearLine(line) {
+      if (!line || typeof line !== "object") return 0;
+      if (typeof line.ad === "undefined" || line.ad === 0 || line.ad === "0" || line.ad === false) return 0;
+      line.ad = 0;
+      return 1;
+    }
+
+    if (!payload || typeof payload !== "object") {
+      return 0;
+    }
+
+    changed += clearLine(payload);
+
+    if (Array.isArray(payload.vod_play_url)) {
+      for (var i = 0; i < payload.vod_play_url.length; i++) {
+        changed += clearLine(payload.vod_play_url[i]);
+      }
+    }
+
+    if (Array.isArray(payload.list)) {
+      for (var j = 0; j < payload.list.length; j++) {
+        changed += clearLine(payload.list[j]);
+      }
+    }
+
+    return changed;
+  }
+
+  function rewritePayload(payload) {
+    return removeAds(payload) + clearPlaybackAdFlags(payload);
+  }
+
   function removeSplashAds(payload) {
     return removeAds(payload);
   }
@@ -404,14 +441,14 @@
     if (typeof outer.data === "string") {
       var originalData = outer.data;
       var decrypted = decryptPayload(originalData);
-      var removed = removeAds(decrypted);
+      var removed = rewritePayload(decrypted);
       outer.data = encryptPayload(decrypted, originalData);
       log("removed ad entries: " + removed);
       return JSON.stringify(outer);
     }
 
     if (typeof outer.data === "object") {
-      var removedPlain = removeAds(outer.data);
+      var removedPlain = rewritePayload(outer.data);
       log("removed ad entries from plain payload: " + removedPlain);
       return JSON.stringify(outer);
     }
@@ -425,8 +462,10 @@
         aesEncryptBlock: aesEncryptBlock,
         decryptPayload: decryptPayload,
         encryptPayload: encryptPayload,
+        clearPlaybackAdFlags: clearPlaybackAdFlags,
         removeAds: removeAds,
         removeSplashAds: removeSplashAds,
+        rewritePayload: rewritePayload,
         rewriteBody: rewriteBody,
         utf8ToBytes: utf8ToBytes,
         bytesToHex: bytesToHex
