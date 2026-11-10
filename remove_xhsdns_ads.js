@@ -322,6 +322,9 @@
     var removed = 0;
     var paths = [
       ["splash"],
+      ["launch", "splash"],
+      ["launch", "popup"],
+      ["home", "banners"],
       ["home", "banner_adv1"],
       ["home", "banner_adv2"],
       ["home", "online_time_adv"],

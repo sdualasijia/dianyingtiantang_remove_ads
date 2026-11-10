@@ -1,9 +1,9 @@
 #!name=电影天堂去广告
-#!desc=移除 api.xhsdns.cn 下发的开屏、首页横幅、播放页贴片/暂停广告和游戏广告入口，保留其它初始化数据
+#!desc=移除 api.xhsdns.cn / api.dyapis.cn 下发的开屏、首页横幅、播放页贴片/暂停广告和游戏广告入口，保留其它初始化数据
 #!author=Codex
 
 [Script]
-http-response ^https:\/\/api\.xhsdns\.cn\/api\/(?:app\/init|vod\/details|vod\/play)(?:\?.*)?$ requires-body=1,script-path=https://raw.githubusercontent.com/sdualasijia/dianyingtiantang_remove_ads/main/remove_xhsdns_ads.js,timeout=10,tag=电影天堂去广告
+http-response ^https:\/\/(?:api\.xhsdns\.cn|api\.dyapis\.cn)\/api\/(?:app\/init|vod\/details|vod\/play)(?:\?.*)?$ requires-body=1,script-path=https://raw.githubusercontent.com/sdualasijia/dianyingtiantang_remove_ads/main/remove_xhsdns_ads.js,timeout=10,tag=电影天堂去广告
 
 [MITM]
-hostname = api.xhsdns.cn
+hostname = api.xhsdns.cn,api.dyapis.cn
